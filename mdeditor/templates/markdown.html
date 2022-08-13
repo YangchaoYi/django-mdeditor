@@ -65,7 +65,7 @@
                     border : "1px solid rgb(221,221,221)"
                 })
             },
-            syncScrolling: "single",
+            syncScrolling: {{ config.syncScrolling|lower }},
             path: "{% static  'mdeditor/js/lib' %}" + "/",
             // theme
             theme : "{{ config.theme|safe }}",

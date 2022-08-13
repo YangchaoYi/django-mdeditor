@@ -156,7 +156,7 @@
     tocStartLevel: 1,              // Said from H1 to create ToC
     htmlDecode: false,          // Open the HTML tag identification 
     pageBreak: true,           // Enable parse page break [========]
-    atLink: true,           // for @link
+    atLink: false,           // for @link
     emailLink: true,           // for email address auto link
     taskList: false,          // Enable Github Flavored Markdown task lists
     emoji: false,          // :emoji: , Support Github emoji, Twitter Emoji (Twemoji);
@@ -480,6 +480,9 @@
       var _this = this;
       var settings = this.settings;
       var loadPath = settings.path;
+
+      editormd.loadScript(loadPath + "jquery_plantuml");
+      editormd.loadScript(loadPath + "rawdeflate");
 
       var loadFlowChartOrSequenceDiagram = function () {
 
@@ -1906,9 +1909,14 @@
 
       marked.setOptions(markedOptions);
 
-      var newMarkdownDoc = editormd.$marked(cmValue, markedOptions);
+      // replace plantuml block with plantuml image.
+      cmValue = cmValue.replace(/@startuml((.|\s)*?)@enduml/, function ($1) {
+        var url = "http://www.plantuml.com/plantuml/img/" + encode64(deflate($1, 9));
+        // console.info(url);
+        return "![](" + url + ")";
+      })
 
-      //console.info("cmValue", cmValue, newMarkdownDoc);
+      var newMarkdownDoc = editormd.$marked(cmValue, markedOptions);
 
       newMarkdownDoc = editormd.filterHTMLTags(newMarkdownDoc, settings.htmlDecode);
 
@@ -3221,7 +3229,7 @@
       tocm: false,
       tocStartLevel: 1,              // Said from H1 to create ToC  
       pageBreak: true,
-      atLink: true,           // for @link
+      atLink: false,           // for @link
       emailLink: true,           // for mail address auto link
       taskList: false,          // Enable Github Flavored Markdown task lists
       emoji: false,          // :emoji: , Support Twemoji, fontAwesome, Editor.md logo emojis.
@@ -3394,7 +3402,7 @@
 
       var headingHTML = "<h" + level + " id=\"h" + level + "-" + this.options.headerPrefix + id + "\">";
 
-      headingHTML += "<a name=\"" + text + "\" class=\"reference-link\"></a>";
+      headingHTML += "<a name=\"" + id + "\" class=\"reference-link\"></a>";
       headingHTML += "<span class=\"header-link octicon octicon-link\"></span>";
       headingHTML += (hasLinkReg) ? this.atLink(this.emoji(linkText)) : this.atLink(this.emoji(text));
       headingHTML += "</h" + level + ">";
@@ -3699,7 +3707,7 @@
       htmlDecode: false,
       autoLoadKaTeX: true,
       pageBreak: true,
-      atLink: true,    // for @link
+      atLink: false,    // for @link
       emailLink: true,    // for mail address auto link
       tex: false,
       taskList: false,   // Github Flavored Markdown task lists
