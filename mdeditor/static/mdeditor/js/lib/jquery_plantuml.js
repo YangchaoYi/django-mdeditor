@@ -1,6 +1,6 @@
-$(document).ready(function () {
-  plantuml_runonce();
-});
+// $(document).ready(function () {
+//   plantuml_runonce();
+// });
 
 // <!--  taken from https://github.com/johan/js-deflate -->
 
@@ -53,50 +53,50 @@ function encode6bit(b) {
   return '?';
 }
 
-var deflater = window.SharedWorker && new SharedWorker('rawdeflate.js');
-if (deflater) {
-  deflater.port.addEventListener('message', done_deflating, false);
-  deflater.port.start();
-} else if (window.Worker) {
-  deflater = new Worker('rawdeflate.js');
-  deflater.onmessage = done_deflating;
-}
+// var deflater = window.SharedWorker && new SharedWorker('rawdeflate.js');
+// if (deflater) {
+//   deflater.port.addEventListener('message', done_deflating, false);
+//   deflater.port.start();
+// } else if (window.Worker) {
+//   deflater = new Worker('rawdeflate.js');
+//   deflater.onmessage = done_deflating;
+// }
 
-function done_deflating(e) {
-  var done = 0;
-  $("img").each(function () {
-    if (done == 1) return;
-    var u1 = $(this).attr("src");
-    if (u1 != null) return;
-    var u2 = $(this).attr("uml");
-    if (u2 == "") return;
-    $(this).attr("src", "http://www.plantuml.com/plantuml/img/" + encode64(e.data));
-    $(this).attr("uml", "");
-    done = 1;
-  });
-  plantuml_runonce();
-}
+// function done_deflating(e) {
+//   var done = 0;
+//   $("img").each(function () {
+//     if (done == 1) return;
+//     var u1 = $(this).attr("src");
+//     if (u1 != null) return;
+//     var u2 = $(this).attr("uml");
+//     if (u2 == "") return;
+//     $(this).attr("src", "http://www.plantuml.com/plantuml/img/" + encode64(e.data));
+//     $(this).attr("uml", "");
+//     done = 1;
+//   });
+//   plantuml_runonce();
+// }
 
-function plantuml_runonce() {
-  var done = 0;
-  $("img").each(function () {
-    if (done == 1) return;
-    var u1 = $(this).attr("src");
-    if (u1 != null) return;
-    var u2 = $(this).attr("uml");
-    if (u2 == "") return;
-    var s = unescape(encodeURIComponent(u2));
-    if (deflater) {
-      if (deflater.port && deflater.port.postMessage) {
-        deflater.port.postMessage(s);
-      } else {
-        deflater.postMessage(s);
-      }
-    } else {
-      setTimeout(function () {
-        done_deflating({data: deflate(s)});
-      }, 100);
-    }
-    done = 1;
-  });
-}
+// function plantuml_runonce() {
+//   var done = 0;
+//   $("img").each(function () {
+//     if (done == 1) return;
+//     var u1 = $(this).attr("src");
+//     if (u1 != null) return;
+//     var u2 = $(this).attr("uml");
+//     if (u2 == "") return;
+//     var s = unescape(encodeURIComponent(u2));
+//     if (deflater) {
+//       if (deflater.port && deflater.port.postMessage) {
+//         deflater.port.postMessage(s);
+//       } else {
+//         deflater.postMessage(s);
+//       }
+//     } else {
+//       setTimeout(function () {
+//         done_deflating({data: deflate(s)});
+//       }, 100);
+//     }
+//     done = 1;
+//   });
+// }
