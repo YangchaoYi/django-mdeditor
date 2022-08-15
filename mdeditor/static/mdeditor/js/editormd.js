@@ -3396,7 +3396,7 @@
       };
 
       var isChinese = /^[\u4e00-\u9fa5]+$/.test(text);
-      var id = (isChinese) ? escape(text).replace(/\%/g, "") : text.toLowerCase().replace(/[^\w]+/g, "-");
+      var id = (isChinese) ? escape(text).replace(/\%/g, "") : text.toLowerCase().replace(/[^\w\s]+/g, "").replace(/\s/g, "-");
 
       markdownToC.push(toc);
 
